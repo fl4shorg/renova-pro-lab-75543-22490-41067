@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 interface ResponseViewerProps {
   response: string;
   method?: string;
@@ -6,6 +8,8 @@ interface ResponseViewerProps {
 }
 
 export const ResponseViewer = ({ response, method, url, status }: ResponseViewerProps) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  
   let parsedResponse;
   try {
     parsedResponse = JSON.parse(response);
@@ -66,18 +70,16 @@ export const ResponseViewer = ({ response, method, url, status }: ResponseViewer
       <div className="bg-primary text-primary-foreground p-4">
         <div className="max-h-80 overflow-auto flex flex-col gap-4">
           <RequestInfo />
-          <div className="bg-background/10 p-2 rounded flex items-center justify-center">
-            <img 
-              src={imageUrl} 
-              alt="" 
-              className="max-w-full h-auto rounded"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
-            />
-          </div>
-          <div className="border-t border-primary-foreground/20 pt-3">
-            <div className="text-xs font-semibold mb-2 opacity-70">JSON Response:</div>
+          <img 
+            src={imageUrl} 
+            alt="" 
+            className="max-w-full h-auto rounded"
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageLoaded(false)}
+            style={{ display: imageLoaded ? 'block' : 'none' }}
+          />
+          <div className={imageLoaded ? "border-t border-primary-foreground/20 pt-3" : ""}>
+            {imageLoaded && <div className="text-xs font-semibold mb-2 opacity-70">JSON Response:</div>}
             <pre className="text-xs font-mono whitespace-pre-wrap break-words">
               {response}
             </pre>
