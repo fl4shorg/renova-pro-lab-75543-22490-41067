@@ -66,17 +66,22 @@ export const ResponseViewer = ({ response, method, url, status }: ResponseViewer
       <div className="bg-primary text-primary-foreground p-4">
         <div className="max-h-80 overflow-auto flex flex-col gap-4">
           <RequestInfo />
-          <img 
-            src={imageUrl} 
-            alt="API Response" 
-            className="max-w-full h-auto rounded"
-          />
-          <details className="cursor-pointer">
-            <summary className="text-xs font-semibold">View JSON Response</summary>
-            <pre className="text-xs font-mono whitespace-pre-wrap break-words mt-2">
+          <div className="bg-background/10 p-2 rounded flex items-center justify-center">
+            <img 
+              src={imageUrl} 
+              alt="" 
+              className="max-w-full h-auto rounded"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+          </div>
+          <div className="border-t border-primary-foreground/20 pt-3">
+            <div className="text-xs font-semibold mb-2 opacity-70">JSON Response:</div>
+            <pre className="text-xs font-mono whitespace-pre-wrap break-words">
               {response}
             </pre>
-          </details>
+          </div>
         </div>
       </div>
     );
