@@ -53,13 +53,34 @@ export const ApiEndpoint = ({ endpoint, serverUrl }: ApiEndpointProps) => {
       const params = new URLSearchParams(formData);
       const url = `${serverUrl}${endpoint.path}?${params.toString()}`;
       const res = await fetch(url);
-      const data = await res.json();
-      setResponse(JSON.stringify(data, null, 2));
-      setRequestInfo({
-        method: endpoint.method,
-        url: url,
-        status: res.status
-      });
+      
+      // Check content type to handle images
+      const contentType = res.headers.get('content-type') || '';
+      
+      if (contentType.includes('image/')) {
+        // For direct image responses, return the URL
+        setResponse(JSON.stringify({ url: url, type: 'image' }, null, 2));
+        setRequestInfo({
+          method: endpoint.method,
+          url: url,
+          status: res.status
+        });
+      } else {
+        // For JSON responses
+        try {
+          const data = await res.json();
+          setResponse(JSON.stringify(data, null, 2));
+        } catch {
+          // If JSON parsing fails, treat as text
+          const text = await res.text();
+          setResponse(text);
+        }
+        setRequestInfo({
+          method: endpoint.method,
+          url: url,
+          status: res.status
+        });
+      }
     } catch (error) {
       setResponse(JSON.stringify({ error: 'Request failed', message: String(error) }, null, 2));
       setRequestInfo({

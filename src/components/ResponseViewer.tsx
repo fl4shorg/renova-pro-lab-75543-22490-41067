@@ -18,11 +18,15 @@ export const ResponseViewer = ({ response, method, url, status }: ResponseViewer
     if (!obj || typeof obj !== 'object') return null;
     
     // Check common image URL properties
-    const imageKeys = ['url', 'image', 'imageUrl', 'img', 'picture', 'photo', 'src'];
+    const imageKeys = ['url', 'image', 'imageUrl', 'img', 'picture', 'photo', 'src', 'link'];
     for (const key of imageKeys) {
-      if (obj[key] && typeof obj[key] === 'string' && 
-          (obj[key].startsWith('http') || obj[key].startsWith('data:image'))) {
-        return obj[key];
+      if (obj[key] && typeof obj[key] === 'string') {
+        const value = obj[key];
+        // Check if it's a valid image URL or data URI
+        if (value.startsWith('http') || value.startsWith('data:image') || 
+            value.match(/\.(jpg|jpeg|png|gif|webp|bmp|svg)(\?|$)/i)) {
+          return value;
+        }
       }
     }
     
