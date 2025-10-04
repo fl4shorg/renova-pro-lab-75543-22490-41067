@@ -61,7 +61,7 @@ export const ApiEndpoint = ({ endpoint, serverUrl }: ApiEndpointProps) => {
         // For direct video responses, convert to blob URL
         const blob = await res.blob();
         const blobUrl = URL.createObjectURL(blob);
-        setResponse(JSON.stringify({ url: blobUrl, type: 'video', originalUrl: url }, null, 2));
+        setResponse(JSON.stringify({ url: url, type: 'video', blobUrl: blobUrl }, null, 2));
         setRequestInfo({
           method: endpoint.method,
           url: url,
@@ -71,7 +71,7 @@ export const ApiEndpoint = ({ endpoint, serverUrl }: ApiEndpointProps) => {
         // For direct image responses, convert to blob URL
         const blob = await res.blob();
         const blobUrl = URL.createObjectURL(blob);
-        setResponse(JSON.stringify({ url: blobUrl, type: 'image', originalUrl: url }, null, 2));
+        setResponse(JSON.stringify({ url: url, type: 'image', blobUrl: blobUrl }, null, 2));
         setRequestInfo({
           method: endpoint.method,
           url: url,
