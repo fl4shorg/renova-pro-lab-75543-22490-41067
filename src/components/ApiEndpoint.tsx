@@ -54,10 +54,18 @@ export const ApiEndpoint = ({ endpoint, serverUrl }: ApiEndpointProps) => {
       const url = `${serverUrl}${endpoint.path}?${params.toString()}`;
       const res = await fetch(url);
       
-      // Check content type to handle images
+      // Check content type to handle different media types
       const contentType = res.headers.get('content-type') || '';
       
-      if (contentType.includes('image/')) {
+      if (contentType.includes('video/')) {
+        // For direct video responses, return the URL
+        setResponse(JSON.stringify({ url: url, type: 'video' }, null, 2));
+        setRequestInfo({
+          method: endpoint.method,
+          url: url,
+          status: res.status
+        });
+      } else if (contentType.includes('image/')) {
         // For direct image responses, return the URL
         setResponse(JSON.stringify({ url: url, type: 'image' }, null, 2));
         setRequestInfo({
