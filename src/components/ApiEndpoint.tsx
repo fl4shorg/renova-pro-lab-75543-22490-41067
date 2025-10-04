@@ -54,45 +54,20 @@ export const ApiEndpoint = ({ endpoint, serverUrl }: ApiEndpointProps) => {
       const url = `${serverUrl}${endpoint.path}?${params.toString()}`;
       const res = await fetch(url);
       
-      // Check content type to handle different media types
-      const contentType = res.headers.get('content-type') || '';
-      
-      if (contentType.includes('video/')) {
-        // For direct video responses, convert to blob URL
-        const blob = await res.blob();
-        const blobUrl = URL.createObjectURL(blob);
-        setResponse(JSON.stringify({ url: url, type: 'video', blobUrl: blobUrl }, null, 2));
-        setRequestInfo({
-          method: endpoint.method,
-          url: url,
-          status: res.status
-        });
-      } else if (contentType.includes('image/')) {
-        // For direct image responses, convert to blob URL
-        const blob = await res.blob();
-        const blobUrl = URL.createObjectURL(blob);
-        setResponse(JSON.stringify({ url: url, type: 'image', blobUrl: blobUrl }, null, 2));
-        setRequestInfo({
-          method: endpoint.method,
-          url: url,
-          status: res.status
-        });
-      } else {
-        // For JSON responses
-        try {
-          const data = await res.json();
-          setResponse(JSON.stringify(data, null, 2));
-        } catch {
-          // If JSON parsing fails, treat as text
-          const text = await res.text();
-          setResponse(text);
-        }
-        setRequestInfo({
-          method: endpoint.method,
-          url: url,
-          status: res.status
-        });
+      // Handle response - try JSON first, then text
+      try {
+        const data = await res.json();
+        setResponse(JSON.stringify(data, null, 2));
+      } catch {
+        // If JSON parsing fails, treat as text
+        const text = await res.text();
+        setResponse(text);
       }
+      setRequestInfo({
+        method: endpoint.method,
+        url: url,
+        status: res.status
+      });
     } catch (error) {
       setResponse(JSON.stringify({ error: 'Request failed', message: String(error) }, null, 2));
       setRequestInfo({
