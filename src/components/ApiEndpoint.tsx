@@ -16,10 +16,14 @@ export const ApiEndpoint = ({ endpoint, serverUrl }: ApiEndpointProps) => {
   const [response, setResponse] = useState<string | null>(null);
   const [requestInfo, setRequestInfo] = useState<{method: string; url: string; status: number; contentType?: string} | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [responseKey, setResponseKey] = useState(0);
   const healthStatus = useApiHealth(serverUrl, endpoint.path);
 
   const handleSubmit = async (formData: Record<string, string>) => {
     setIsLoading(true);
+    setResponse(null);
+    setRequestInfo(null);
+    setResponseKey(prev => prev + 1);
     try {
       // Use Cloud proxies to avoid CORS for specific endpoints
       if (endpoint.id === 'noticias') {
@@ -192,6 +196,7 @@ export const ApiEndpoint = ({ endpoint, serverUrl }: ApiEndpointProps) => {
                 </h3>
               </div>
               <ResponseViewer 
+                key={responseKey}
                 response={response} 
                 method={requestInfo?.method}
                 url={requestInfo?.url}
