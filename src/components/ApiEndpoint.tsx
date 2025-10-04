@@ -14,7 +14,7 @@ interface ApiEndpointProps {
 export const ApiEndpoint = ({ endpoint, serverUrl }: ApiEndpointProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [response, setResponse] = useState<string | null>(null);
-  const [requestInfo, setRequestInfo] = useState<{method: string; url: string; status: number} | null>(null);
+  const [requestInfo, setRequestInfo] = useState<{method: string; url: string; status: number; contentType?: string} | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const healthStatus = useApiHealth(serverUrl, endpoint.path);
 
@@ -54,20 +54,54 @@ export const ApiEndpoint = ({ endpoint, serverUrl }: ApiEndpointProps) => {
       const url = `${serverUrl}${endpoint.path}?${params.toString()}`;
       const res = await fetch(url);
       
-      // Handle response - try JSON first, then text
-      try {
-        const data = await res.json();
-        setResponse(JSON.stringify(data, null, 2));
-      } catch {
-        // If JSON parsing fails, treat as text
-        const text = await res.text();
-        setResponse(text);
+      const contentType = res.headers.get('content-type') || '';
+      
+      // Handle different content types
+      if (contentType.includes('video/')) {
+        // Direct video stream - create blob URL for player
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        setResponse(blobUrl);
+        setRequestInfo({
+          method: endpoint.method,
+          url: url,
+          status: res.status,
+          contentType: 'video'
+        });
+      } else if (contentType.includes('image/')) {
+        // Direct image - create blob URL for display
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        setResponse(blobUrl);
+        setRequestInfo({
+          method: endpoint.method,
+          url: url,
+          status: res.status,
+          contentType: 'image'
+        });
+      } else {
+        // JSON or text response
+        try {
+          const data = await res.json();
+          setResponse(JSON.stringify(data, null, 2));
+          setRequestInfo({
+            method: endpoint.method,
+            url: url,
+            status: res.status,
+            contentType: 'json'
+          });
+        } catch {
+          // If JSON parsing fails, treat as text
+          const text = await res.text();
+          setResponse(text);
+          setRequestInfo({
+            method: endpoint.method,
+            url: url,
+            status: res.status,
+            contentType: 'text'
+          });
+        }
       }
-      setRequestInfo({
-        method: endpoint.method,
-        url: url,
-        status: res.status
-      });
     } catch (error) {
       setResponse(JSON.stringify({ error: 'Request failed', message: String(error) }, null, 2));
       setRequestInfo({
@@ -162,6 +196,7 @@ export const ApiEndpoint = ({ endpoint, serverUrl }: ApiEndpointProps) => {
                 method={requestInfo?.method}
                 url={requestInfo?.url}
                 status={requestInfo?.status}
+                contentType={requestInfo?.contentType}
               />
             </div>
           )}
