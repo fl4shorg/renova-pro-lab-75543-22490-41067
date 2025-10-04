@@ -58,16 +58,20 @@ export const ApiEndpoint = ({ endpoint, serverUrl }: ApiEndpointProps) => {
       const contentType = res.headers.get('content-type') || '';
       
       if (contentType.includes('video/')) {
-        // For direct video responses, return the URL
-        setResponse(JSON.stringify({ url: url, type: 'video' }, null, 2));
+        // For direct video responses, convert to blob URL
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        setResponse(JSON.stringify({ url: blobUrl, type: 'video', originalUrl: url }, null, 2));
         setRequestInfo({
           method: endpoint.method,
           url: url,
           status: res.status
         });
       } else if (contentType.includes('image/')) {
-        // For direct image responses, return the URL
-        setResponse(JSON.stringify({ url: url, type: 'image' }, null, 2));
+        // For direct image responses, convert to blob URL
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        setResponse(JSON.stringify({ url: blobUrl, type: 'image', originalUrl: url }, null, 2));
         setRequestInfo({
           method: endpoint.method,
           url: url,
