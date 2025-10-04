@@ -6,11 +6,18 @@ This is a React-based API documentation platform built with Vite, TypeScript, an
 **Current State**: Production-ready. The application is fully functional and running on Replit.
 
 ## Recent Changes
-- **2025-10-04**: Initial Replit setup completed
+- **2025-10-04**: Major API expansion and Replit setup completed
   - Installed npm dependencies
   - Verified Vite configuration for Replit environment (port 5000, host 0.0.0.0, allowedHosts enabled)
   - Configured deployment settings for autoscale deployment
-  - Application successfully running with 33 API endpoints across 7 categories
+  - Expanded API documentation from 33 to 100 endpoints across 10 categories
+  - Added new categories: Anime (4 endpoints), nsfwhub (37 endpoints), Hentai/sfmcompile (15 endpoints)
+  - Enhanced existing categories with new endpoints:
+    - Download: Added Pornhub and Facebook downloads
+    - Pesquisa: Added Lyrics Search and Wikipedia
+    - Frases: Added Pensador search
+    - Jornal: Added ESPN news
+    - Figurinhas: Added Coreana, Desenho, Raiva, Roblox, Engraçadas
 
 ## Project Architecture
 
