@@ -10,7 +10,7 @@ export const ServerSelector = ({ servers, selectedServer, onServerChange }: Serv
   return (
     <div className="mb-6">
       <label className="block text-xs font-semibold text-muted-foreground mb-3 font-sans uppercase tracking-wider">
-        Select Server
+        Selecionar Servidor
       </label>
       <div className="relative group">
         <div className="absolute inset-0 gradient-primary opacity-0 group-focus-within:opacity-5 rounded-xl blur-xl transition-smooth"></div>
