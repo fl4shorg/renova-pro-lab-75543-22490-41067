@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { ChevronDown, Play, Code } from 'lucide-react';
 import { ApiEndpoint as ApiEndpointType } from '@/types/api';
 import { EndpointForm } from './EndpointForm';
@@ -11,7 +11,7 @@ interface ApiEndpointProps {
   serverUrl: string;
 }
 
-export const ApiEndpoint = ({ endpoint, serverUrl }: ApiEndpointProps) => {
+const ApiEndpointComponent = ({ endpoint, serverUrl }: ApiEndpointProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [response, setResponse] = useState<string | null>(null);
   const [requestInfo, setRequestInfo] = useState<{method: string; url: string; status: number; contentType?: string} | null>(null);
@@ -210,3 +210,5 @@ export const ApiEndpoint = ({ endpoint, serverUrl }: ApiEndpointProps) => {
     </div>
   );
 };
+
+export const ApiEndpoint = memo(ApiEndpointComponent);

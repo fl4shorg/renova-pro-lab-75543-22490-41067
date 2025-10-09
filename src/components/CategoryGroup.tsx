@@ -1,18 +1,25 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { ChevronDown, Folder } from 'lucide-react';
 import { ApiCategory } from '@/types/api';
 import { ApiEndpoint } from './ApiEndpoint';
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 
 interface CategoryGroupProps {
   category: ApiCategory;
   serverUrl: string;
 }
 
-export const CategoryGroup = ({ category, serverUrl }: CategoryGroupProps) => {
+const CategoryGroupComponent = ({ category, serverUrl }: CategoryGroupProps) => {
   const [isOpen, setIsOpen] = useState(true);
+  const { ref, isVisible } = useIntersectionObserver({ threshold: 0.1 });
 
   return (
-    <div className="bg-card/50 border border-border/50 rounded-2xl shadow-card hover:shadow-elegant transition-smooth overflow-hidden backdrop-blur-sm">
+    <div 
+      ref={ref}
+      className={`bg-card/50 border border-border/50 rounded-2xl shadow-card hover:shadow-elegant transition-smooth overflow-hidden backdrop-blur-sm will-change-transform ${
+        isVisible ? 'fade-in-up' : 'opacity-0'
+      }`}
+    >
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full px-6 py-5 text-left flex items-center justify-between hover:bg-accent/5 transition-smooth group"
@@ -45,3 +52,5 @@ export const CategoryGroup = ({ category, serverUrl }: CategoryGroupProps) => {
     </div>
   );
 };
+
+export const CategoryGroup = memo(CategoryGroupComponent);

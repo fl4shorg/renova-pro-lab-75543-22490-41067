@@ -29,7 +29,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background font-sans">
-      <main className="max-w-5xl mx-auto px-4 sm:px-8 py-8 sm:py-20">
+      <main className="max-w-5xl mx-auto px-4 sm:px-8 py-8 sm:py-20 will-change-transform">
         <Header />
         
         <ServerSelector
