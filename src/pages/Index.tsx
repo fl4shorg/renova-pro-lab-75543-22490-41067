@@ -45,7 +45,7 @@ const Index = () => {
 
         <SearchBar value={searchQuery} onChange={setSearchQuery} />
 
-        <div className="space-y-4">
+        <div className="space-y-4 content-visibility-auto" style={{ contentVisibility: 'auto', containIntrinsicSize: '1px 1000px' }}>
           {hasResults ? (
             filteredCategories.map(category => (
               <CategoryGroup

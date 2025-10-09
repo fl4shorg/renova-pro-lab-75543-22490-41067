@@ -1,7 +1,8 @@
-import { useState, memo } from 'react';
+import { useState, memo, lazy, Suspense } from 'react';
 import { ChevronDown, Folder } from 'lucide-react';
 import { ApiCategory } from '@/types/api';
-import { ApiEndpoint } from './ApiEndpoint';
+import { Skeleton } from '@/components/ui/skeleton';
+const ApiEndpoint = lazy(() => import('./ApiEndpoint').then(m => ({ default: m.ApiEndpoint })));
 
 interface CategoryGroupProps {
   category: ApiCategory;
@@ -13,7 +14,8 @@ const CategoryGroupComponent = ({ category, serverUrl }: CategoryGroupProps) => 
 
   return (
     <div 
-      className="bg-card/50 border border-border/50 rounded-2xl shadow-card hover:shadow-elegant transition-smooth overflow-hidden backdrop-blur-sm"
+      className="bg-card/50 border border-border/50 rounded-2xl shadow-card hover:shadow-elegant transition-smooth overflow-hidden backdrop-blur-sm content-visibility-auto"
+      style={{ contentVisibility: 'auto', containIntrinsicSize: '1px 600px' }}
     >
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -34,13 +36,16 @@ const CategoryGroupComponent = ({ category, serverUrl }: CategoryGroupProps) => 
       </button>
 
       {isOpen && (
-        <div>
+        <div className="content-visibility-auto" style={{ contentVisibility: 'auto', containIntrinsicSize: '1px 500px' }}>
           {category.endpoints.map((endpoint) => (
-            <ApiEndpoint 
-              key={endpoint.id} 
-              endpoint={endpoint} 
-              serverUrl={serverUrl}
-            />
+            <div key={endpoint.id} className="content-visibility-auto" style={{ contentVisibility: 'auto', containIntrinsicSize: '1px 220px' }}>
+              <Suspense fallback={<div className="p-4"><Skeleton className="h-28 w-full rounded-xl" /></div>}>
+                <ApiEndpoint 
+                  endpoint={endpoint} 
+                  serverUrl={serverUrl}
+                />
+              </Suspense>
+            </div>
           ))}
         </div>
       )}
